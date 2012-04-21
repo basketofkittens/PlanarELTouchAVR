@@ -1,0 +1,5 @@
+Software library for driving Planar EL160.80.38-SM1 EL display with integrated touch screen and SED1330 display controller.
+
+This lib is based on Frank Wallenwein's <fwallenwein@tklinux.de> SED1330 lib and Philip Pemberton's <philpem.me.uk> PIC code and reverse engineering.
+
+Phil Pemberton's website has been a key resource for putting this lib together. Many thanks to him for his efforts. http://www.philpem.me.uk/elec/lcd/planar160x80/
