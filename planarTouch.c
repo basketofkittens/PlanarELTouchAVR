@@ -76,7 +76,7 @@ unsigned char elRead (int command);			// Get Data or cursor information
 // defines
 //*******************************************************
 
-static FILE myStdOut = FDEV_SETUP_STREAM(EL_PrintChar, NULL,_FDEV_SETUP_WRITE);
+static FILE myStdOut = FDEV_SETUP_STREAM(elPrintChar, NULL,_FDEV_SETUP_WRITE);
 
 // *************************************************************
 // Sed 1330 Command Set 
@@ -321,7 +321,7 @@ void elClearText(void) {
 /*********************************************************/
 void elClearGraph(void) {
 
-	uint16_t x;//, xmax;
+	uint16_t x;
 
 	// move cursor to starting address of graphics page
 	elSetCursor(0x1000);
@@ -338,14 +338,14 @@ void elClearGraph(void) {
 /*********************************************************/
 void elWriteStr0(unsigned char *myText) {
 	while (*myText)
-		EL_Char(*myText++);
+		elChar(*myText++);
 
 }
 
 /*********************************************************/
 /* Print a char 						                */
 /*********************************************************/
-void EL_Char(unsigned char myText) {
+void elChar(unsigned char myText) {
 	elSendCommand(MWRITE);
 	elSendByte(myText);
 }
@@ -353,7 +353,7 @@ void EL_Char(unsigned char myText) {
 /*********************************************************/
 /* Set/Reset Pixel                                       */
 /*********************************************************/
-void EL_Pixel(int x, int y, drawmode show) {
+void elPixel(int x, int y, drawmode show) {
 
 	uint16_t addr, ch;
 
@@ -384,20 +384,20 @@ void EL_Pixel(int x, int y, drawmode show) {
 /* Draws a rectangle from x1,y1 to x2,y2.                                   */
 /* Thank you  Knut Baardsen @ Baardsen Software, Norway http://www.baso.no  */
 /****************************************************************************/
-void EL_Rectangle(int x1,int y1,int x2,int y2,drawmode show) {
+void elRectangle(int x1,int y1,int x2,int y2,drawmode show) {
 
 	int i;
 	for (i=x1; i<=x2; i++) 
-		EL_Pixel(i,y1, show);
+		elPixel(i,y1, show);
 	for (i=x1; i<=x2; i++) 
-		EL_Pixel(i,y2, show); 
+		elPixel(i,y2, show); 
 	for (i=y1; i<=y2; i++) 
-		EL_Pixel(x1,i, show);
+		elPixel(x1,i, show);
 	for (i=y1; i<=y2; i++) 
-		EL_Pixel(x2,i, show);
+		elPixel(x2,i, show);
 	if ( (show == fill)||(show == clear) ) {
 		for (i=y1; i<=y2; i++) 
-			EL_Line(x1,i,x2,i, show);
+			elLine(x1,i,x2,i, show);
 	} 
 }
 
@@ -405,14 +405,14 @@ void EL_Rectangle(int x1,int y1,int x2,int y2,drawmode show) {
 /* Draws a line from x,y at given degree from inner_radius to outer_radius. */
 /* Thank you  Knut Baardsen @ Baardsen Software, Norway http://www.baso.no  */
 /****************************************************************************/
-void EL_DegreeLine(int x,int y, int degree, int inner_radius, int outer_radius, drawmode show) {
+void elDegreeLine(int x,int y, int degree, int inner_radius, int outer_radius, drawmode show) {
 
 	int fx,fy,tx,ty;
 	fx = x + (inner_radius * sin(degree * 3.14 / 180));
 	fy = y - (inner_radius * cos(degree * 3.14 / 180));
 	tx = x + (outer_radius * sin(degree * 3.14 / 180));
 	ty = y - (outer_radius * cos(degree * 3.14 / 180));
-	EL_Line(fx,fy,tx,ty,show);
+	elLine(fx,fy,tx,ty,show);
 }
 
 /****************************************************************************/
@@ -420,20 +420,20 @@ void EL_DegreeLine(int x,int y, int degree, int inner_radius, int outer_radius, 
 /* Set show to 1 to draw pixel, set to 0 to hide pixel.                     */
 /* Thank you  Knut Baardsen @ Baardsen Software, Norway http://www.baso.no  */
 /****************************************************************************/
-void EL_Circle(int x, int y, int radius, drawmode  show) {
+void elCircle(int x, int y, int radius, drawmode  show) {
 
 	int xc = 0;
 	int yc = radius;
 	int p = 3 - (radius<<1);
 	while (xc <= yc)   {
-		EL_Pixel(x + xc, y + yc, show);
-		EL_Pixel(x + xc, y - yc, show);
-		EL_Pixel(x - xc, y + yc, show);
-		EL_Pixel(x - xc, y - yc, show);
-		EL_Pixel(x + yc, y + xc, show);
-		EL_Pixel(x + yc, y - xc, show);
-		EL_Pixel(x - yc, y + xc, show);
-		EL_Pixel(x - yc, y - xc, show);
+		elPixel(x + xc, y + yc, show);
+		elPixel(x + xc, y - yc, show);
+		elPixel(x - xc, y + yc, show);
+		elPixel(x - xc, y - yc, show);
+		elPixel(x + yc, y + xc, show);
+		elPixel(x + yc, y - xc, show);
+		elPixel(x - yc, y + xc, show);
+		elPixel(x - yc, y - xc, show);
 		if (p < 0) {
 			p += (xc++ << 2) + 6;
 		} else {
@@ -447,7 +447,7 @@ void EL_Circle(int x, int y, int radius, drawmode  show) {
 /* Draws a line from x1,y1 go x2,y2. Line can be drawn in any direction.    */
 /* Thank you  Knut Baardsen @ Baardsen Software, Norway http://www.baso.no  */
 /****************************************************************************/
-void EL_Line(int x1, int y1, int x2, int y2, drawmode show)  {
+void elLine(int x1, int y1, int x2, int y2, drawmode show)  {
 
 	int dy = y2 - y1;
 	int dx = x2 - x1;
@@ -467,7 +467,7 @@ void EL_Line(int x1, int y1, int x2, int y2, drawmode show)  {
 	
 	dy <<= 1;
 	dx <<= 1;
-	EL_Pixel(x1,y1,show);
+	elPixel(x1,y1,show);
 
 	if (dx > dy) {
 		fraction = dy - (dx >> 1); 
@@ -479,7 +479,7 @@ void EL_Line(int x1, int y1, int x2, int y2, drawmode show)  {
 			
 			x1 += stepx;
 			fraction += dy;  
-			EL_Pixel(x1,y1,show);
+			elPixel(x1,y1,show);
 		}
 		
 	} else {
@@ -492,7 +492,7 @@ void EL_Line(int x1, int y1, int x2, int y2, drawmode show)  {
 
 			y1 += stepy;
 			fraction += dx;
-			EL_Pixel(x1,y1,show);
+			elPixel(x1,y1,show);
 		}
 	}
 }
@@ -503,17 +503,17 @@ void EL_Line(int x1, int y1, int x2, int y2, drawmode show)  {
 /* Print Char ( used for STDIO in avr-libc )             */
 /*********************************************************/
 
-static int EL_PrintChar(char myChar, FILE *stream) {  
+static int elPrintChar(char myChar, FILE *stream) {  
 
 	stream = NULL;
-	EL_Char(myChar);
+	elChar(myChar);
 	return 0;
 }
 
 /*********************************************************/
 /* Read touchscreen, returns row and col concatenated to a 16bit int */
 /*********************************************************/
-uint16_t EL_TouchscreenRead(void) {
+uint16_t elTouchscreenRead(void) {
 
 	uint8_t col, row;
 

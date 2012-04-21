@@ -116,16 +116,15 @@ void elReset(void);			/* Reset Display Controler.     */
 void elClearText(void);		/* Clear Text Screen    */
 void elWriteStr0(unsigned char *myText);
 void elCursorXY(int x, int y);
-void EL_Char(unsigned char myChar);
-static int EL_PrintChar(char myChar, FILE *stream);	/* for using STDIO in avr-libc */
+void elChar(unsigned char myChar);
+static int elPrintChar(char myChar, FILE *stream);	/* for using STDIO in avr-libc */
 
 void elClearGraph(void);							/* Clear Graphic Screen */
-void EL_Pixel (int x,int y, drawmode show);
-void EL_Line  (int x1, int y1, int x2, int y2, drawmode show);
-void EL_Circle(int x, int y, int radius, drawmode show);
-void EL_Rectangle (int x1,int y1,int x2,int y2,drawmode show);
-void EL_DegreeLine(int x,int y, int degree, int inner_radius, int outer_radius, drawmode show);
-uint16_t EL_TouchscreenRead(void);
-void EL_Write_Hex(const char x);
+void elPixel (int x,int y, drawmode show);
+void elLine  (int x1, int y1, int x2, int y2, drawmode show);
+void elCircle(int x, int y, int radius, drawmode show);
+void elRectangle (int x1,int y1,int x2,int y2,drawmode show);
+void elDegreeLine(int x,int y, int degree, int inner_radius, int outer_radius, drawmode show);
+uint16_t elTouchscreenRead(void);
 
 #endif
